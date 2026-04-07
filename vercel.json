@@ -2,6 +2,10 @@
   "version": 2,
   "builds": [
     {
+      "src": "frontend/**",
+      "use": "@vercel/static"
+    },
+    {
       "src": "backend/app.py",
       "use": "@vercel/python"
     }
@@ -13,7 +17,7 @@
     },
     {
       "src": "/(.*)",
-      "dest": "backend/app.py"
+      "dest": "frontend/$1"
     }
   ]
 }
