@@ -1,0 +1,51 @@
+product_id,product_name,category,price,cost_price,stock_quantity,expiry_date,unit
+P001,Full Cream Milk 1L,Dairy,65,38,113,2025-04-10,bottle
+P002,Toned Milk 500ml,Dairy,32,20,85,2025-04-09,packet
+P003,Brown Bread Loaf,Bakery,45,28,55,2025-04-08,piece
+P004,White Bread Loaf,Bakery,38,22,72,2025-04-07,piece
+P005,Salted Butter 100g,Dairy,55,34,75,2025-04-20,pack
+P006,Unsalted Butter 100g,Dairy,58,36,46,2025-04-22,pack
+P007,Farm Eggs 6pcs,Bakery,72,48,98,2025-04-12,pack
+P008,Farm Eggs 12pcs,Bakery,138,90,59,2025-04-12,pack
+P009,Cheddar Cheese 200g,Dairy,110,70,40,2025-04-11,pack
+P010,Paneer 200g,Dairy,85,55,54,2025-04-09,pack
+P011,Yogurt 400g,Dairy,48,30,70,2025-04-13,cup
+P012,Greek Yogurt 200g,Dairy,65,42,45,2025-04-14,cup
+P013,Organic Honey 500g,Grocery,150,95,35,2026-04-01,bottle
+P014,Wheat Flour 1kg,Grocery,58,36,109,2026-01-01,pack
+P015,Maida 1kg,Grocery,45,28,95,2026-01-01,pack
+P016,Sugar 1kg,Grocery,52,32,129,2026-06-01,pack
+P017,Salt 1kg,Grocery,20,12,150,2027-01-01,pack
+P018,Basmati Rice 1kg,Grocery,95,60,79,2026-06-01,pack
+P019,Toor Dal 500g,Grocery,78,50,75,2026-03-01,pack
+P020,Chana Dal 500g,Grocery,65,40,65,2026-03-01,pack
+P021,Sunflower Oil 1L,Oil,130,82,54,2026-02-01,bottle
+P022,Coconut Oil 500ml,Oil,120,76,44,2026-02-01,bottle
+P023,Mustard Oil 1L,Oil,145,92,40,2026-02-01,bottle
+P024,Chips Masala 60g,Snacks,30,18,200,2025-09-01,pack
+P025,Chips Classic 60g,Snacks,28,17,180,2025-09-01,pack
+P026,Biscuits Cream 200g,Snacks,42,26,160,2025-10-01,pack
+P027,Biscuits Marie 300g,Snacks,38,23,140,2025-10-01,pack
+P028,Instant Noodles 70g,Snacks,25,15,220,2025-11-01,pack
+P029,Instant Noodles Masala 70g,Snacks,28,17,190,2025-11-01,pack
+P030,Cola 500ml,Drinks,40,24,250,2025-12-01,bottle
+P031,Lemon Soda 500ml,Drinks,38,23,200,2025-12-01,bottle
+P032,Mango Juice 200ml,Drinks,25,15,300,2025-11-01,pack
+P033,Orange Juice 1L,Drinks,85,54,80,2025-08-01,bottle
+P034,Green Tea 25bags,Beverages,120,76,60,2026-05-01,box
+P035,Coffee Powder 100g,Beverages,180,114,50,2026-04-01,pack
+P036,Tea Powder 250g,Beverages,95,60,90,2026-04-01,pack
+P037,Turmeric Powder 100g,Spices,35,22,120,2026-06-01,pack
+P038,Red Chilli Powder 100g,Spices,42,26,110,2026-06-01,pack
+P039,Coriander Powder 100g,Spices,30,19,130,2026-06-01,pack
+P040,Garam Masala 50g,Spices,55,35,100,2026-06-01,pack
+P041,Toothpaste 100g,Personal Care,85,54,70,2027-01-01,tube
+P042,Shampoo 200ml,Personal Care,145,92,55,2026-10-01,bottle
+P043,Soap Bar 100g,Personal Care,35,22,200,2027-01-01,piece
+P044,Hand Wash 200ml,Personal Care,95,60,80,2026-08-01,bottle
+P045,Protein Bars 40g,Health,65,41,90,2025-10-01,piece
+P046,Oats 500g,Health,88,56,75,2026-03-01,pack
+P047,Almonds 200g,Health,180,114,40,2026-01-01,pack
+P048,Cashews 200g,Health,220,140,35,2026-01-01,pack
+P049,Detergent Powder 1kg,Household,120,76,60,2027-01-01,pack
+P050,Dish Wash Liquid 500ml,Household,78,50,85,2026-06-01,bottle

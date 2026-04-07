@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Owner Dashboard - Smart Retail AI</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+</head>
+<body>
+    <nav>
+        <div class="logo">SMART RETAIL AI <span style="font-size: 0.8rem; color: var(--primary); margin-left: 10px;">OWNER PANEL</span></div>
+        <div class="nav-links">
+            <a href="dashboard.html" class="nav-link active">Dashboard</a>
+            <a href="analytics.html" class="nav-link">Analytics</a>
+            <a href="index.html" class="nav-link" style="color: var(--danger)">Logout</a>
+        </div>
+    </nav>
+
+    <main>
+        <header class="dashboard-header">
+            <h1>Retail Insights</h1>
+            <p>Smart monitoring and predictive pricing overview for shop owners.</p>
+        </header>
+
+        <!-- KPI Cards -->
+        <div class="stats-grid" id="statsGrid">
+            <div class="stat-card">
+                <span class="stat-label">TODAY'S SALES</span>
+                <div class="stat-value" id="todaySales">₹0.00</div>
+                <div class="stat-diff" style="color: var(--success)">↑ 12% vs yesterday</div>
+            </div>
+            <div class="stat-card clickable" onclick="showExpiryDetails()">
+                <span class="stat-label">EXPIRY ALERTS</span>
+                <div class="stat-value" id="expiryAlerts">0</div>
+                <div class="stat-diff" style="color: var(--danger)">Immediate action required (Click to view)</div>
+            </div>
+            <div class="stat-card">
+                <span class="stat-label">AVG PROFIT MARGIN</span>
+                <div class="stat-value" id="avgMargin">0%</div>
+            </div>
+            <div class="stat-card clickable" onclick="showComboDetails()">
+                <span class="stat-label">COMBO DEALS</span>
+                <div class="stat-value" id="combosCount">0</div>
+                <div class="stat-diff" style="color: var(--accent)">Apriori optimized (Click to view)</div>
+            </div>
+            <div class="stat-card clickable" onclick="showLowStockDetails()">
+                <span class="stat-label">LOW STOCK</span>
+                <div class="stat-value" id="lowStockCount">0</div>
+                <div class="stat-diff" style="color: var(--warning)">Smart Restock tips (Click to view)</div>
+            </div>
+        </div>
+
+        <!-- Expiry Alerts Panel -->
+        <div class="alerts-panel">
+            <div class="alerts-header">
+                <h3>Critical Expiry Alerts</h3>
+                <button class="btn-primary" style="width: auto; padding: 0.5rem 1rem; margin: 0;" onclick="retrainML()">Retrain AI Model</button>
+            </div>
+            <div id="alertsList">
+                <p style="color: var(--text-muted)">Loading real-time alerts...</p>
+            </div>
+        </div>
+    </main>
+
+    <!-- Modals (Same as original) -->
+    <div class="modal-overlay" id="comboModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>All Combo Deals</h2>
+                <button class="close-modal" onclick="closeComboModal()">&times;</button>
+            </div>
+            <div id="comboDetailsList" class="combo-details-list"></div>
+        </div>
+    </div>
+
+    <div class="modal-overlay" id="expiryModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Critical Expiry Details</h2>
+                <button class="close-modal" onclick="closeExpiryModal()">&times;</button>
+            </div>
+            <div id="expiryDetailsList" class="combo-details-list"></div>
+        </div>
+    </div>
+
+    <div class="modal-overlay" id="lowStockModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Inventory Insights & Smart Restock</h2>
+                <button class="close-modal" onclick="closeLowStockModal()">&times;</button>
+            </div>
+            <div id="lowStockDetailsList" class="combo-details-list"></div>
+        </div>
+    </div>
+
+    <script src="realtime.js"></script>
+    <script src="app.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            initDashboard();
+        });
+    </script>
+</body>
+</html>

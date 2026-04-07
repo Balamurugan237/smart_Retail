@@ -1,0 +1,16 @@
+combo_id,combo_name,product_ids,combo_discount_d2,min_support,confidence,lift,category
+CB001,Breakfast Combo,P001|P003|P005,0.08,0.35,0.82,3.2,Dairy-Bakery
+CB002,Egg & Bread Bundle,P003|P004|P007,0.07,0.3,0.78,2.9,Bakery
+CB003,Dairy Saver Pack,P001|P005|P009,0.09,0.28,0.75,2.7,Dairy
+CB004,Snack & Drink Combo,P024|P030|P028,0.06,0.4,0.85,3.5,Snacks-Drinks
+CB005,Kitchen Essentials,P014|P016|P037|P038,0.1,0.32,0.8,3.1,Grocery-Spices
+CB006,Health Boost Pack,P046|P047|P045,0.08,0.25,0.72,2.6,Health
+CB007,Rice & Dal Combo,P018|P019|P021,0.07,0.33,0.79,2.8,Grocery-Oil
+CB008,Personal Care Bundle,P041|P042|P044,0.09,0.29,0.76,2.5,Personal Care
+CB009,Beverage Combo,P034|P035|P036,0.06,0.27,0.73,2.4,Beverages
+CB010,Milk & Curd Pack,P001|P002|P011,0.07,0.36,0.81,3.0,Dairy
+CB011,Nuts & Honey Pack,P047|P048|P013,0.1,0.22,0.7,2.3,Health-Grocery
+CB012,Noodles Party Pack,P028|P029|P024|P030,0.08,0.38,0.83,3.3,Snacks-Drinks
+CB013,Spice Master Kit,P037|P038|P039|P040,0.1,0.31,0.77,2.7,Spices
+CB014,Baking Essentials,P007|P014|P015|P016,0.09,0.26,0.74,2.5,Bakery-Grocery
+CB015,Home Clean Combo,P049|P050|P043,0.07,0.24,0.71,2.2,Household

@@ -1,0 +1,419 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Smart Retail — Owner Dashboard</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;700&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet"/>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+<style>
+:root{
+  --green:#1D9E75;--green-dark:#0F6E56;--green-light:#E1F5EE;
+  --amber:#BA7517;--amber-light:#FAEEDA;
+  --red:#A32D2D;--red-light:#FCEBEB;
+  --blue:#185FA5;--blue-light:#E6F1FB;
+  --bg:#F7F6F2;--card:#FFFFFF;--border:#E8E6DF;
+  --text:#1C1C1A;--muted:#6B6B67;--hint:#ADADAA;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text)}
+nav{background:#fff;border-bottom:1px solid var(--border);padding:0 32px;display:flex;align-items:center;justify-content:space-between;height:64px}
+.brand{font-family:'Playfair Display',serif;font-size:22px}
+.brand span{color:var(--green)}
+.owner-badge{background:var(--green-light);color:var(--green-dark);font-size:12px;font-weight:500;padding:4px 12px;border-radius:20px}
+.refresh-btn{background:var(--green);color:#fff;border:none;padding:8px 16px;border-radius:8px;font-family:'DM Sans',sans-serif;font-size:13px;cursor:pointer}
+.refresh-btn:hover{background:var(--green-dark)}
+.page{padding:28px 32px}
+
+/* KPI CARDS */
+.kpi-row{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:24px}
+.kpi{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:16px 20px}
+.kpi-label{font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:0.6px;margin-bottom:8px}
+.kpi-val{font-family:'Playfair Display',serif;font-size:28px;color:var(--text)}
+.kpi-sub{font-size:12px;margin-top:4px}
+.green{color:var(--green)}.red{color:var(--red)}.amber{color:var(--amber)}
+
+/* GRID */
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:20px}
+.grid3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:16px;margin-bottom:20px}
+.card{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:18px}
+.card-title{font-family:'Playfair Display',serif;font-size:16px;margin-bottom:14px;display:flex;align-items:center;gap:8px}
+.dot{width:8px;height:8px;border-radius:50%;display:inline-block}
+
+/* TABLE */
+.orders-table{width:100%;border-collapse:collapse;font-size:13px}
+.orders-table th{text-align:left;font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:0.5px;padding:8px 12px;border-bottom:1px solid var(--border);font-weight:500}
+.orders-table td{padding:10px 12px;border-bottom:1px solid var(--border);vertical-align:top}
+.orders-table tr:last-child td{border-bottom:none}
+.orders-table tr:hover td{background:var(--bg)}
+.status-badge{font-size:11px;padding:3px 8px;border-radius:6px;font-weight:500;background:var(--green-light);color:var(--green-dark)}
+.expand-btn{font-size:11px;color:var(--green);cursor:pointer;border:none;background:none;font-family:'DM Sans',sans-serif}
+
+/* EXPIRY */
+.expiry-item{display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid var(--border)}
+.expiry-item:last-child{border-bottom:none}
+.exp-icon{width:32px;height:32px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0}
+.exp-info{flex:1}
+.exp-name{font-size:13px;font-weight:500}
+.exp-days{font-size:11px;color:var(--muted);margin-top:1px}
+.disc-pill{font-size:11px;padding:3px 8px;border-radius:8px;font-weight:500}
+.disc-red{background:var(--red-light);color:var(--red)}
+.disc-amber{background:var(--amber-light);color:var(--amber)}
+
+/* TOP PRODUCT BAR */
+.top-bar-row{display:flex;align-items:center;gap:10px;margin-bottom:8px}
+.top-bar-label{font-size:12px;color:var(--muted);width:120px;text-align:right;flex-shrink:0}
+.top-bar-track{flex:1;height:6px;background:var(--bg);border-radius:3px;overflow:hidden}
+.top-bar-fill{height:100%;border-radius:3px;background:var(--green)}
+.top-bar-val{font-size:12px;font-weight:500;width:40px;text-align:right}
+
+/* EMPTY */
+.empty-state{text-align:center;padding:40px;color:var(--hint)}
+.empty-icon{font-size:36px;margin-bottom:8px}
+
+.chart-wrap{position:relative;width:100%;height:200px}
+
+/* ANIMATIONS */
+@keyframes revealUp {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+.reveal-up {
+  opacity: 0;
+  transform: translateY(20px);
+  transition: opacity 0.6s cubic-bezier(0.22, 1, 0.36, 1), transform 0.6s cubic-bezier(0.22, 1, 0.36, 1);
+}
+.reveal-up.visible {
+  opacity: 1; transform: translateY(0);
+}
+.stagger-1 { transition-delay: 0.1s; }
+.stagger-2 { transition-delay: 0.2s; }
+.stagger-3 { transition-delay: 0.3s; }
+.stagger-4 { transition-delay: 0.4s; }
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="brand">Smart<span>Retail</span> <span style="font-size:14px;color:var(--muted);font-family:'DM Sans',sans-serif">Owner View</span></div>
+  <div style="display:flex;align-items:center;gap:12px">
+    <span class="owner-badge">Live Dashboard</span>
+    <button class="refresh-btn" onclick="loadDashboard()">Refresh</button>
+  </div>
+</nav>
+
+<div class="page">
+
+  <!-- KPI -->
+  <div class="kpi-row">
+    <div class="kpi reveal-up stagger-1">
+      <div class="kpi-label">Today's Revenue</div>
+      <div class="kpi-val" id="kpiRevenue">₹0</div>
+      <div class="kpi-sub green" id="kpiOrders">0 orders today</div>
+    </div>
+    <div class="kpi reveal-up stagger-2">
+      <div class="kpi-label">Total Orders</div>
+      <div class="kpi-val" id="kpiTotal">0</div>
+      <div class="kpi-sub green" id="kpiItems">0 items sold</div>
+    </div>
+    <div class="kpi reveal-up stagger-3">
+      <div class="kpi-label">Avg Order Value</div>
+      <div class="kpi-val" id="kpiAOV">₹0</div>
+      <div class="kpi-sub amber">per transaction</div>
+    </div>
+    <div class="kpi reveal-up stagger-4">
+      <div class="kpi-label">Expiry Alerts</div>
+      <div class="kpi-val" id="kpiExpiry">0</div>
+      <div class="kpi-sub red">products need action</div>
+    </div>
+  </div>
+
+  <!-- CHARTS ROW -->
+  <div class="grid2">
+    <div class="card reveal-up">
+      <div class="card-title"><span class="dot" style="background:var(--green)"></span>Revenue by Day</div>
+      <div class="chart-wrap"><canvas id="revenueChart"></canvas></div>
+    </div>
+    <div class="card reveal-up">
+      <div class="card-title"><span class="dot" style="background:var(--blue)"></span>Sales by Category</div>
+      <div class="chart-wrap"><canvas id="categoryChart"></canvas></div>
+    </div>
+  </div>
+
+  <!-- TOP PRODUCTS + EXPIRY -->
+  <div class="grid2" style="margin-bottom:20px">
+    <div class="card reveal-up">
+      <div class="card-title"><span class="dot" style="background:var(--amber)"></span>Top Selling Products</div>
+      <div id="topProductsList"></div>
+    </div>
+    <div class="card reveal-up">
+      <div class="card-title"><span class="dot" style="background:var(--red)"></span>Expiry Alerts</div>
+      <div id="expiryList"></div>
+    </div>
+  </div>
+
+  <!-- SMART INSIGHTS ROW -->
+  <div class="grid2">
+    <div class="card reveal-up" style="border-color:var(--blue)">
+      <div class="card-title" style="color:var(--blue)">
+        <span class="dot" style="background:var(--blue)"></span>
+        Profit Optimizer (High Margin Boost)
+      </div>
+      <div id="profitOptimizationList"></div>
+    </div>
+    <div class="card reveal-up" style="border-color:var(--green)">
+      <div class="card-title" style="color:var(--green)">
+        <span class="dot" style="background:var(--green)"></span>
+        Smart Restock Suggestions
+      </div>
+      <div id="restockList"></div>
+    </div>
+  </div>
+
+  <!-- ORDERS TABLE -->
+  <div class="card">
+    <div class="card-title"><span class="dot" style="background:var(--green)"></span>All Orders <span style="font-size:13px;font-weight:400;color:var(--muted);font-family:'DM Sans',sans-serif" id="orderCount"></span></div>
+    <div id="ordersTableWrap"></div>
+  </div>
+
+</div>
+
+<script>
+const PRODUCTS_MAP = {
+  P001:{name:"Full Cream Milk 1L",cat:"Dairy",emoji:"🥛",cost:38,price:62},
+  P002:{name:"Toned Milk 500ml",cat:"Dairy",emoji:"🥛",cost:20,price:32},
+  P003:{name:"Brown Bread Loaf",cat:"Bakery",emoji:"🍞",cost:28,price:45},
+  P004:{name:"White Bread Loaf",cat:"Bakery",emoji:"🍞",cost:22,price:38},
+  P005:{name:"Salted Butter 100g",cat:"Dairy",emoji:"🧈",cost:34,price:55},
+  P007:{name:"Farm Eggs 6pcs",cat:"Bakery",emoji:"🥚",cost:48,price:72},
+  P008:{name:"Farm Eggs 12pcs",cat:"Bakery",emoji:"🥚",cost:90,price:138},
+  P009:{name:"Cheddar Cheese 200g",cat:"Dairy",emoji:"🧀",cost:70,price:110},
+  P010:{name:"Paneer 200g",cat:"Dairy",emoji:"🧀",cost:55,price:85},
+  P011:{name:"Yogurt 400g",cat:"Dairy",emoji:"🥛",cost:30,price:48},
+  P013:{name:"Organic Honey 500g",cat:"Grocery",emoji:"🍯",cost:95,price:150},
+  P014:{name:"Wheat Flour 1kg",cat:"Grocery",emoji:"🌾",cost:36,price:58},
+  P016:{name:"Sugar 1kg",cat:"Grocery",emoji:"🍬",cost:32,price:52},
+  P018:{name:"Basmati Rice 1kg",cat:"Grocery",emoji:"🍚",cost:60,price:95},
+  P019:{name:"Toor Dal 500g",cat:"Grocery",emoji:"🫘",cost:50,price:78},
+  P021:{name:"Sunflower Oil 1L",cat:"Oil",emoji:"🫙",cost:82,price:130},
+  P024:{name:"Chips Masala 60g",cat:"Snacks",emoji:"🍟",cost:18,price:30},
+  P026:{name:"Biscuits Cream 200g",cat:"Snacks",emoji:"🍪",cost:26,price:42},
+  P028:{name:"Instant Noodles 70g",cat:"Snacks",emoji:"🍜",cost:15,price:25},
+  P029:{name:"Instant Noodles Masala",cat:"Snacks",emoji:"🍜",cost:17,price:28},
+  P030:{name:"Cola 500ml",cat:"Drinks",emoji:"🥤",cost:24,price:40},
+  P034:{name:"Green Tea 25bags",cat:"Beverages",emoji:"🍵",cost:76,price:120},
+  P035:{name:"Coffee Powder 100g",cat:"Beverages",emoji:"☕",cost:114,price:180},
+  P036:{name:"Tea Powder 250g",cat:"Beverages",emoji:"🫖",cost:60,price:95},
+  P037:{name:"Turmeric Powder 100g",cat:"Spices",emoji:"🌿",cost:22,price:35},
+  P038:{name:"Red Chilli Powder 100g",cat:"Spices",emoji:"🌶️",cost:26,price:42},
+  P041:{name:"Toothpaste 100g",cat:"Personal Care",emoji:"🪥",cost:54,price:85},
+  P043:{name:"Soap Bar 100g",cat:"Personal Care",emoji:"🧼",cost:22,price:35},
+  P044:{name:"Hand Wash 200ml",cat:"Personal Care",emoji:"🧴",cost:60,price:95},
+  P045:{name:"Protein Bars 40g",cat:"Health",emoji:"💪",cost:41,price:65},
+  P046:{name:"Oats 500g",cat:"Health",emoji:"🌾",cost:56,price:88},
+  P047:{name:"Almonds 200g",cat:"Health",emoji:"🥜",cost:114,price:180},
+  P048:{name:"Cashews 200g",cat:"Health",emoji:"🥜",cost:140,price:220},
+  P049:{name:"Detergent Powder 1kg",cat:"Household",emoji:"🧺",cost:76,price:120},
+  P050:{name:"Dish Wash Liquid 500ml",cat:"Household",emoji:"🧴",cost:50,price:78},
+};
+
+const EXPIRY_DATA = [
+  {id:"P004",name:"White Bread Loaf",emoji:"🍞",days:5,d1:0.10},
+  {id:"P002",name:"Toned Milk 500ml",emoji:"🥛",days:7,d1:0.05},
+  {id:"P010",name:"Paneer 200g",emoji:"🧀",days:7,d1:0.05},
+  {id:"P003",name:"Brown Bread Loaf",emoji:"🍞",days:6,d1:0.05},
+  {id:"P001",name:"Full Cream Milk 1L",emoji:"🥛",days:8,d1:0.00},
+];
+
+let revenueChartObj = null;
+let categoryChartObj = null;
+
+async function loadSmartInsights() {
+  try {
+    // 1. Profit Optimization
+    const pRes = await fetch('http://127.0.0.1:5000/api/dashboard/profit-optimization');
+    const profitData = await pRes.json();
+    const pList = document.getElementById('profitOptimizationList');
+    if (profitData.length === 0) {
+      pList.innerHTML = '<div class="empty-state">No specific high-margin boost needed.</div>';
+    } else {
+      pList.innerHTML = profitData.map(p => `
+        <div class="expiry-item" style="border-left:3px solid var(--blue); padding-left:10px">
+          <div class="exp-info">
+            <div class="exp-name">${p.product_name}</div>
+            <div class="exp-days">Margin: <b style="color:var(--blue)">${Math.round(p.margin)}%</b> | Sold: ${p.total_sold} units</div>
+          </div>
+          <button class="expand-btn" style="color:var(--blue)" onclick="alert('Recommendation: Run a 5% bundle discount to boost volume for this high-margin item!')">View Strategy</button>
+        </div>
+      `).join('');
+    }
+
+    // 2. Smart Restock
+    const rRes = await fetch('http://127.0.0.1:5000/api/dashboard/smart-restock');
+    const restockData = await rRes.json();
+    const rList = document.getElementById('restockList');
+    rList.innerHTML = restockData.map(r => `
+      <div class="expiry-item" style="border-left:3px solid var(--green); padding-left:10px">
+        <div class="exp-info">
+          <div class="exp-name">${r.product_name}</div>
+          <div class="exp-days">Stock: <b style="color:var(--green)">${r.current_stock}</b> | Suggest REFILL: <b>+${r.suggested_restock}</b></div>
+        </div>
+        <span class="status-badge" style="background:var(--green-light)">${r.priority}</span>
+      </div>
+    `).join('');
+
+  } catch (e) {
+    console.log("Smart Insights API error:", e);
+  }
+}
+
+function loadDashboard() {
+  loadSmartInsights();
+  const orders = JSON.parse(localStorage.getItem('smartretail_orders') || '[]');
+  const today = new Date().toISOString().split('T')[0];
+  const todayOrders = orders.filter(o => o.order_date === today);
+
+  // KPIs
+  const totalRevenue = todayOrders.reduce((s,o) => s + o.total_amount, 0);
+  const totalItems = todayOrders.reduce((s,o) => s + o.items.reduce((ss,i) => ss+i.quantity, 0), 0);
+  const aov = orders.length > 0 ? Math.round(orders.reduce((s,o) => s+o.total_amount, 0) / orders.length) : 0;
+
+  document.getElementById('kpiRevenue').textContent = '₹' + totalRevenue.toLocaleString();
+  document.getElementById('kpiOrders').textContent = `${todayOrders.length} orders today`;
+  document.getElementById('kpiTotal').textContent = orders.length;
+  document.getElementById('kpiItems').textContent = `${orders.reduce((s,o)=>s+o.items.reduce((ss,i)=>ss+i.quantity,0),0)} items sold`;
+  document.getElementById('kpiAOV').textContent = '₹' + aov;
+  document.getElementById('kpiExpiry').textContent = EXPIRY_DATA.filter(e => e.days <= 7).length;
+  document.getElementById('orderCount').textContent = `(${orders.length} total)`;
+
+  renderRevenueChart(orders);
+  renderCategoryChart(orders);
+  renderTopProducts(orders);
+  renderExpiryAlerts();
+  renderOrdersTable(orders);
+}
+
+function renderRevenueChart(orders) {
+  const days = [];
+  const revenues = [];
+  for (let i = 6; i >= 0; i--) {
+    const d = new Date();
+    d.setDate(d.getDate() - i);
+    const dateStr = d.toISOString().split('T')[0];
+    const label = d.toLocaleDateString('en',{weekday:'short'});
+    days.push(label);
+    const rev = orders.filter(o => o.order_date === dateStr).reduce((s,o) => s+o.total_amount, 0);
+    revenues.push(rev);
+  }
+  if (revenueChartObj) revenueChartObj.destroy();
+  revenueChartObj = new Chart(document.getElementById('revenueChart'), {
+    type:'line',
+    data:{labels:days,datasets:[{data:revenues,borderColor:'#1D9E75',borderWidth:2,tension:0.4,fill:true,backgroundColor:'rgba(29,158,117,0.08)',pointBackgroundColor:'#1D9E75',pointRadius:4}]},
+    options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{x:{grid:{display:false},ticks:{font:{size:11},color:'#6B6B67'}},y:{grid:{color:'rgba(0,0,0,0.05)'},ticks:{font:{size:10},color:'#6B6B67',callback:v=>'₹'+v}}}}
+  });
+}
+
+function renderCategoryChart(orders) {
+  const catTotals = {};
+  orders.forEach(o => o.items.forEach(i => {
+    const p = PRODUCTS_MAP[i.product_id];
+    if (!p) return;
+    catTotals[p.cat] = (catTotals[p.cat] || 0) + i.total;
+  }));
+  const labels = Object.keys(catTotals);
+  const data = Object.values(catTotals);
+  const colors = ['#1D9E75','#378ADD','#BA7517','#D85A30','#7F77DD','#639922','#D4537E','#888780'];
+  if (categoryChartObj) categoryChartObj.destroy();
+  if (labels.length === 0) return;
+  categoryChartObj = new Chart(document.getElementById('categoryChart'), {
+    type:'doughnut',
+    data:{labels,datasets:[{data,backgroundColor:colors.slice(0,labels.length),borderWidth:0}]},
+    options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{position:'right',labels:{font:{size:11},padding:10}}}}
+  });
+}
+
+function renderTopProducts(orders) {
+  const prodTotals = {};
+  orders.forEach(o => o.items.forEach(i => {
+    prodTotals[i.product_id] = (prodTotals[i.product_id] || 0) + i.quantity;
+  }));
+  const sorted = Object.entries(prodTotals).sort((a,b) => b[1]-a[1]).slice(0,6);
+  const max = sorted[0]?.[1] || 1;
+  const el = document.getElementById('topProductsList');
+  if (sorted.length === 0) {
+    el.innerHTML = `<div class="empty-state"><div class="empty-icon">📦</div><div>No sales data yet</div></div>`;
+    return;
+  }
+  el.innerHTML = sorted.map(([pid, qty]) => {
+    const p = PRODUCTS_MAP[pid] || {name:pid, emoji:'📦'};
+    const pct = Math.round(qty/max*100);
+    return `<div class="top-bar-row">
+      <div class="top-bar-label">${p.emoji} ${p.name.split(' ').slice(0,2).join(' ')}</div>
+      <div class="top-bar-track"><div class="top-bar-fill" style="width:${pct}%"></div></div>
+      <div class="top-bar-val">${qty} sold</div>
+    </div>`;
+  }).join('');
+}
+
+function renderExpiryAlerts() {
+  const el = document.getElementById('expiryList');
+  el.innerHTML = EXPIRY_DATA.map(e => {
+    const isCritical = e.days <= 5;
+    return `<div class="expiry-item">
+      <div class="exp-icon" style="background:${isCritical?'var(--red-light)':'var(--amber-light)'}">${e.emoji}</div>
+      <div class="exp-info">
+        <div class="exp-name">${e.name}</div>
+        <div class="exp-days">Expires in <b style="color:${isCritical?'var(--red)':'var(--amber)'}">${e.days} days</b></div>
+      </div>
+      ${e.d1 > 0 ? `<span class="disc-pill ${isCritical?'disc-red':'disc-amber'}">−${Math.round(e.d1*100)}%</span>` : '<span style="font-size:11px;color:var(--hint)">Monitor</span>'}
+    </div>`;
+  }).join('');
+}
+
+function renderOrdersTable(orders) {
+  const el = document.getElementById('ordersTableWrap');
+  if (orders.length === 0) {
+    el.innerHTML = `<div class="empty-state"><div class="empty-icon">🛒</div><div style="font-size:14px">No orders yet — orders from customer page will appear here!</div></div>`;
+    return;
+  }
+  const sorted = [...orders].reverse();
+  el.innerHTML = `<table class="orders-table">
+    <thead><tr>
+      <th>Order ID</th><th>Customer</th><th>Date</th>
+      <th>Items</th><th>Amount</th><th>Payment</th><th>Status</th>
+    </tr></thead>
+    <tbody>
+    ${sorted.map(o => `<tr>
+      <td style="font-size:12px;color:var(--muted)">${o.order_id}</td>
+      <td><div style="font-weight:500">${o.customer_name}</div><div style="font-size:11px;color:var(--hint)">${o.phone}</div></td>
+      <td style="font-size:12px">${o.order_date}<br/><span style="color:var(--hint);font-size:11px">${o.order_time||''}</span></td>
+      <td>
+        ${o.items.map(i=>`<div style="font-size:11px;color:var(--muted)">${PRODUCTS_MAP[i.product_id]?.emoji||'📦'} ${i.product_name} ×${i.quantity}</div>`).join('')}
+      </td>
+      <td style="font-weight:500;color:var(--green)">₹${o.total_amount}</td>
+      <td style="font-size:12px">${o.payment_mode}</td>
+      <td><span class="status-badge">${o.status}</span></td>
+    </tr>`).join('')}
+    </tbody>
+  </table>`;
+}
+
+function initRevealObserver() {
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                entry.target.classList.add('visible');
+                observer.unobserve(entry.target);
+            }
+        });
+    }, { threshold: 0.1 });
+    document.querySelectorAll('.reveal-up').forEach(el => observer.observe(el));
+}
+
+loadDashboard();
+initRevealObserver();
+setInterval(loadDashboard, 10000); // auto refresh every 10s
+</script>
+</body>
+</html>

@@ -1,0 +1,11 @@
+product_id,product_name,expiry_date,days_until_expiry,predicted_flag,expiry_discount_d1,suggested_action
+P004,White Bread Loaf,2025-04-07,5,EXPIRING_SOON,0.1,Add to combo + 10% discount
+P002,Toned Milk 500ml,2025-04-09,7,EXPIRING_SOON,0.05,Add to combo + 5% discount
+P010,Paneer 200g,2025-04-09,7,EXPIRING_SOON,0.05,Add to combo + 5% discount
+P003,Brown Bread Loaf,2025-04-08,6,EXPIRING_SOON,0.05,Add to combo + 5% discount
+P001,Full Cream Milk 1L,2025-04-10,8,WATCH,0.0,Monitor daily
+P009,Cheddar Cheese 200g,2025-04-11,9,WATCH,0.0,Monitor daily
+P007,Farm Eggs 6pcs,2025-04-12,10,WATCH,0.0,Monitor daily
+P008,Farm Eggs 12pcs,2025-04-12,10,WATCH,0.0,Monitor daily
+P011,Yogurt 400g,2025-04-13,11,OK,0.0,Normal sale
+P012,Greek Yogurt 200g,2025-04-14,12,OK,0.0,Normal sale
